@@ -1,0 +1,40 @@
+//======================================================================
+// Edit Distance Computational Algorithm Tests - Data File
+// String trees
+//======================================================================
+// Each test is two-line group:
+// Line 1 format:
+//		reference expression ~ response expression
+//       Where:
+//       reference = reference tree's string representation
+//       response = response tree's string representation
+// Line 2:
+//       editDistance nodalMapping_string_representation
+//======================================================================
+
+//==================== Testing options =================================
+// Format: $ parameterName = parameterValue
+// Note: names and values are case-sensitive!
+
+// $ stopOnFirstError = true
+
+//==================== Simple trees ====================================
+
+N { } ~ N { }
+0.0 (0$N;0$N)
+
+//==================== Shasha's regression tests =======================
+// Source$ http$//www.cis.njit.edu/~discdb/tmatch/source/tmatch.cgi
+// and http$//www.cis.njit.edu/~discdb/tmatch/demo.html
+
+// tree 1 vs. tree 2
+N{M{M{I{H{}}H{}I{}}B{}}} ~ H{M{B{}I{}M{I{}H{}I{}}}}
+5.0 (-1$null;0$B)(-1$null;1$I)(0$H;-1$null)(1$I;2$I)(2$H;3$H)(3$I;4$I)(4$M;5$M)(5$B;-1$null)(6$M;6$M)(7$N;7$H)
+
+// tree 3 vs. tree 4
+N{M{M{I{}H{}I{H{}}}I{}}} ~ A{B{X{}Y{}Z{}}B{X{}Y{}Z{}}}
+11.0 (-1$null;5$Y)(-1$null;6$Z)(-1$null;7$B)(0$I;0$X)(1$H;1$Y)(2$H;2$Z)(3$I;-1$null)(4$M;3$B)(5$I;4$X)(6$M;8$A)(7$N;-1$null)
+
+// tree 5 vs. tree 6
+A{B{N{}Y{}Z{}}B{H{}Y{}Z{}K{}}} ~ N{M{M{I{}H{}I{H{}}}I{}}}
+12.0 (-1$null;5$I)(-1$null;6$M)(-1$null;7$N)(0$N;0$I)(1$Y;1$H)(2$Z;-1$null)(3$B;-1$null)(4$H;2$H)(5$Y;-1$null)(6$Z;-1$null)(7$K;-1$null)(8$B;3$I)(9$A;4$M)

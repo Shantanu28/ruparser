@@ -1,0 +1,74 @@
+//======================================================================
+// Ascii Printer Regression Tests - Data File
+//======================================================================
+// Allowed variables are "x", "y", "z", whose numerical values must be
+// declared according to the test case format below. Because compilation
+// is done prior to processing test cases, no other variables are allowed
+// although values may be different for different test cases.
+//
+// Each test is two-line group:
+// Line 1 format:
+//		reference expression ~ response expression [ ~ precisionTol]
+//       reference = instructor-input reference expression
+//       response = student response expression
+// Line 2: responseSyntaxTreeHTMLString
+//       - The tree should include status marking = "highlights").
+//======================================================================
+
+//==================== Testing options =================================
+// Format: $ parameterName = parameterValue
+// Note: names and values are case-sensitive!
+
+// $ stopOnFirstError = true
+
+//==================== Tests that fail =================================
+
+//==================== Simple expressions ==============================
+// Easy output line key for the lines below:
+// D F R W U M C d f s tree
+
+1 ~ 1
+1(C)
+
+x ~ x
+x(C)
+
+1 ~ 2
+2(U)
+
+x ~ y
+y(U)
+
+//==================== All elements are there but in a different structure
+// Easy output line key for the lines below:
+// D F R W U M C d f s tree
+
+3*x+4 ~ 4*x+3
+4(C) *(C) x(C) +(C) 3(C)
+
+//==================== Redundant elements ==============================
+// Easy output line key for the lines below:
+// D F R W U M C d f s tree
+
+1 ~ (1)
+((R) 1(C) )(R)
+
+//==================== Discarded elements ==============================
+// Note: the marker does not, cannot and should not identify discarded elements.
+// Discarded elements are associated with the matching phase and do not have a
+// MathToken, which is the unit data that the marker works with in syntax trees.
+// Easy output line key for the lines below:
+// D F R W U M C d f s tree
+
+sin(x) ~ sin(x)
+sin(C) ((D) x(C) )(D)
+
+//==================== Implicit multiplication =========================
+
+3x ~ 3x
+3(C) *(C) x(C)
+
+//==================== Constants =======================================
+
+pi ~ pi
+pi(C)

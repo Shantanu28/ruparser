@@ -1,0 +1,47 @@
+//======================================================================
+// Absolute Canonicalization / Unary-to-multinary operation conversion
+// Stage
+// Regression Tests - Data File
+//======================================================================
+// The allowed variables in all expressions are
+// "x", "y", "z".
+// Each test is two-line group:
+// Line 1: input expression
+// Line 2: convertedSyntaxTree
+//======================================================================
+
+//==================== Testing options =================================
+// Format: $ parameterName = parameterValue
+// Note: names and values are case-sensitive!
+
+// $ stopOnFirstError = true
+
+//==================== Tests that fail =================================
+
+//==================== Basic operations ================================
+
+2
+N$2$D { }
+
+// Shouldn't be canonicalized because a unary plus is always redundant,
+// so it should never reach this canonicalization step. It is defined to
+// have NO inverse multinary operation.
++2
+UOP$+$D { N$2$D { } }
+
+// Null parent
+-2
+MOP$+$F { UOP$-$D { N$2$D { } } }
+
+// Non-null parent
+(-2)
+P$Paren$D { MOP$+$F { UOP$-$D { N$2$D { } } } }
+
+//==================== Multiple branches ===============================
+
+x*(-y)
+BOP$*$D { V$x$D { } P$Paren$D { MOP$+$F { UOP$-$D { V$y$D { } } } } }
+
+// Previous pittfall$ the x-branch disappeared
+x*-y
+BOP$*$D { V$x$D { } MOP$+$F { UOP$-$D { V$y$D { } } } }

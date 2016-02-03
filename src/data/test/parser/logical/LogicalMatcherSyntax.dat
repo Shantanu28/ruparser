@@ -1,0 +1,117 @@
+//======================================================================
+// Logical Matching Syntax Tree Structure Regression Tests - Data File
+//======================================================================
+// The allowed variables in all expressions are
+// "x", "y", "z".
+// Each test is two-line group:
+// Line 1: input expression
+// Line 2: expression syntax tree's string representation
+//======================================================================
+
+//==================== Testing options =================================
+// Format: $ parameterName = parameterValue
+// Note: names and values are case-sensitive!
+
+$ stopOnFirstError = true
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+// Arithmetic expressions
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+//==================== Tests that fail =================================
+
+1+2
+RES$response$F { R$:=$F { BOP$+$D { N$1$D { } N$2$D { } } E$empty$F { } } }
+
+//==================== Single elements =================================
+
+1
+RES$response$F { R$:=$F { N$1$D { } E$empty$F { } } }
+
+1.5
+RES$response$F { R$:=$F { N$1.5$D { } E$empty$F { } } }
+
+//==================== Binary operations ===============================
+
+1+2
+RES$response$F { R$:=$F { BOP$+$D { N$1$D { } N$2$D { } } E$empty$F { } } }
+
+//==================== Binary and unary +/- operations =================
+
++1+2
+RES$response$F { R$:=$F { BOP$+$D { UOP$+$D { N$1$D { } } N$2$D { } } E$empty$F { } } }
+
++1-2
+RES$response$F { R$:=$F { BOP$-$D { UOP$+$D { N$1$D { } } N$2$D { } } E$empty$F { } } }
+
+-1+2
+RES$response$F { R$:=$F { BOP$+$D { UOP$-$D { N$1$D { } } N$2$D { } } E$empty$F { } } }
+
+-1-2
+RES$response$F { R$:=$F { BOP$-$D { UOP$-$D { N$1$D { } } N$2$D { } } E$empty$F { } } }
+
+//==================== Binary and unary *// operations =================
+-1*2
+RES$response$F { R$:=$F { BOP$*$D { UOP$-$D { N$1$D { } } N$2$D { } } E$empty$F { } } }
+
+//==================== Multiple occurances of binary operations ========
+
+1+2+3
+RES$response$F { R$:=$F { BOP$+$D { BOP$+$D { N$1$D { } N$2$D { } } N$3$D { } } E$empty$F { } } }
+
+//==================== Implicit multiplication =========================
+
+1 2 3
+RES$response$F { R$:=$F { BOP$*$D { BOP$*$D { N$1$D { } N$2$D { } } N$3$D { } } E$empty$F { } } }
+
+//==================== Complex arithmetic ==============================
+
+i
+RES$response$F { R$:=$F { C$i$D { } E$empty$F { } } }
+
+j
+RES$response$F { R$:=$F { C$j$D { } E$empty$F { } } }
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+// Logical expressions
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+//==================== Single statements and relations ==================
+
+x:=1
+RES$response$F { R$:=$D { V$x$D { } N$1$D { } } }
+
+x!=1
+RES$response$F { R$!=$D { V$x$D { } N$1$D { } } }
+
+x=1
+RES$response$F { R$=$D { V$x$D { } N$1$D { } } }
+
+x<1
+RES$response$F { R$<$D { V$x$D { } N$1$D { } } }
+
+x>1
+RES$response$F { R$>$D { V$x$D { } N$1$D { } } }
+
+x<=1
+RES$response$F { R$<=$D { V$x$D { } N$1$D { } } }
+
+x:-1
+RES$response$F { R$:-$D { V$x$D { } N$1$D { } } }
+
+x>=1
+RES$response$F { R$>=$D { V$x$D { } N$1$D { } } }
+
+//==================== Multiple statements ==============================
+
+x:=1, y<2
+RES$response$F { R$:=$D { V$x$D { } N$1$D { } } R$<$D { V$y$D { } N$2$D { } } }
+
+x=1, y:-2, z:=3
+RES$response$F { R$=$D { V$x$D { } N$1$D { } } R$:-$D { V$y$D { } N$2$D { } }  R$:=$D { V$z$D { } N$3$D { } } }
+
+x^2<x+3, y+x!=y-x, z-5>3
+RES$response$F { R$<$D { BOP$^$D { V$x$D { } N$2$D { } } BOP$+$D { V$x$D { } N$3$D { } } } R$!=$D { BOP$+$D { V$y$D { } V$x$D { } } BOP$-$D { V$y$D { } V$x$D { } } } R$>$D { BOP$-$D { V$z$D { } N$5$D { } } N$3$D { } } } 
+
+x^2>=x+3, y+x<=y-x, 3
+RES$response$F { R$>=$D { BOP$^$D { V$x$D { } N$2$D { } } BOP$+$D { V$x$D { } N$3$D { } } } R$<=$D { BOP$+$D { V$y$D { } V$x$D { } } BOP$-$D { V$y$D { } V$x$D { } } } R$:=$F { N$3$D { } E$empty$F { } } }

@@ -1,0 +1,34 @@
+//======================================================================
+// Absolute Canonicalization / Redundant Binary + Remover
+// Regression Tests - Data File
+//======================================================================
+// The allowed variables in all expressions are
+// "x", "y", "z".
+// Each test is two-line group:
+// Line 1: originalTree
+// Line 2: transformedtree
+//
+// * In this test case math token stati are ignored.
+//======================================================================
+
+//==================== Testing options =================================
+// Format: $ parameterName = parameterValue
+// Note: names and values are case-sensitive!
+
+$ stopOnFirstError = true
+
+//==================== Tests that fail =================================
+
+//==================== Simple trees ====================================
+
+// 2+-3 -> 2-3
+BOP$+$D { N$2$D { } UOP$-$D { N$3$D { } } }
+BOP$-$D { N$2$D { } N$3$D { } }
+
+// -3+2 is unchanged
+BOP$+$D { UOP$-$D { N$3$D { } } N$2$D { } }
+BOP$+$D { UOP$-$D { N$3$D { } } N$2$D { } }
+
+// 2*+3 is unchanged
+BOP$*$D { N$2$D { } UOP$+$D { N$3$D { } } }
+BOP$*$D { N$2$D { } UOP$+$D { N$3$D { } } }

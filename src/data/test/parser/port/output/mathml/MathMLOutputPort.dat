@@ -1,0 +1,183 @@
+//======================================================================
+// MathML Content Output Port Regression Tests - Data File
+//======================================================================
+// Allowed variables are "x", "y", "z", whose numerical values must be
+// declared according to the test case format below. Because compilation
+// is done prior to processing test cases, no other variables are allowed
+// although values may be different for different test cases.
+//
+// Each test is two-line group:
+// Line 1 format:
+//		string in the math parser's text syntax
+// Line 2 format:
+//		correspondingMathML content string of an expression
+//======================================================================
+
+//==================== Tests that fail =================================
+
+//==================== Single elements =================================
+
+1
+<math><cn>1</cn></math>
+
+x
+<math><ci>x</ci></math>
+
+//==================== Unary operations ================================
+
+-1
+<math><apply><minus/><cn>1</cn></apply></math>
+
+-x
+<math><apply><minus/><ci>x</ci></apply></math>
+
+--1
+<math><apply><minus/><apply><minus/><cn>1</cn></apply></apply></math>
+
+---1
+<math><apply><minus/><apply><minus/><apply><minus/><cn>1</cn></apply></apply></apply></math>
+
+//==================== Binary operations ===============================
+
+2+3
+<math><apply><plus/><cn>2</cn><cn>3</cn></apply></math>
+
+2-3
+<math><apply><minus/><cn>2</cn><cn>3</cn></apply></math>
+
+2*3
+<math><apply><times/><cn>2</cn><cn>3</cn></apply></math>
+
+2/3
+<math><apply><divide/><cn>2</cn><cn>3</cn></apply></math>
+
+2^3
+<math><apply><power/><cn>2</cn><cn>3</cn></apply></math>
+
+//==================== Multinary operations ============================
+
+// Generates cascaded binary pluses, not a multinary plus. But that's a valid MathML string.
+2+3+4
+<math><apply><plus/><apply><plus/><cn>2</cn><cn>3</cn></apply><cn>4</cn></apply></math>
+
+// Generates cascaded binary multiplications, not a multinary multiplication. But that's a valid MathML string.
+2*3*4
+<math><apply><times/><apply><times/><cn>2</cn><cn>3</cn></apply><cn>4</cn></apply></math>
+
+2/3/4
+<math><apply><divide/><apply><divide/><cn>2</cn><cn>3</cn></apply><cn>4</cn></apply></math>
+
+2-3-4
+<math><apply><minus/><apply><minus/><cn>2</cn><cn>3</cn></apply><cn>4</cn></apply></math>
+
+//==================== Unary operations ================================
+
+sin(x)
+<math><apply><sin/><ci>x</ci></apply></math>
+
+log(x)
+<math><apply><log/><ci>x</ci></apply></math>
+
+ln(x)
+<math><apply><ln/><ci>x</ci></apply></math>
+
+root(x)
+<math><apply><root/><ci>x</ci></apply></math>
+
+//==================== Binary functions ================================
+
+log(x,y)
+<math><apply><log/><logbase><ci>x</ci></logbase><ci>y</ci></apply></math>
+
+// Non-standard ordering of arguments and qualifiers
+root(x,y)
+<math><apply><root/><degree><ci>x</ci></degree><ci>y</ci></apply></math>
+
+// Should not be translated to "2 % 3" by convention
+rem(2,3)
+<math><apply><rem/><cn>2</cn><cn>3</cn></apply></math>
+
+//==================== Composite expressions ===========================
+
+root(x)+y
+<math><apply><plus/><apply><root/><ci>x</ci></apply><ci>y</ci></apply></math>
+
+root(x+y)
+<math><apply><root/><apply><plus/><ci>x</ci><ci>y</ci></apply></apply></math>
+
+y-root(x,y)
+<math><apply><minus/><ci>y</ci><apply><root/><degree><ci>x</ci></degree><ci>y</ci></apply></apply></math>
+
+//==================== Synthetic parentheses ===========================
+// Some parentheses must be added to the text format to indicate the correct
+// operation precedence, e.g. when converting the MathML content tree of 1/(2+3)
+// that doesn't have parentheses into "1/(2+3)", not "1/2+3".
+
+-(2+3)
+<math><apply><minus/><apply><plus/><cn>2</cn><cn>3</cn></apply></apply></math>
+
+2/(3+4)
+<math><apply><divide/><cn>2</cn><apply><plus/><cn>3</cn><cn>4</cn></apply></apply></math>
+
+-sin(x)
+<math><apply><minus/><apply><sin/><ci>x</ci></apply></apply></math>
+
+2*(3+4)
+<math><apply><times/><cn>2</cn><apply><plus/><cn>3</cn><cn>4</cn></apply></apply></math>
+
+//==================== Syntax mis-alignments ===========================
+
+sqrt(x)
+<math><apply><root/><ci>x</ci></apply></math>
+
+// Cubic root: converted from unary (in parser) to binary (in MathML)
+cbrt(x)
+<math><apply><root/><degree><cn>3</cn></degree><ci>x</ci></apply></math>
+
+//==================== Mathematical constants ==========================
+
+pi
+<math><pi/></math>
+
+e
+<math><exponentiale/></math>
+
+gamma
+<math><eulergamma/></math>
+
+i
+<math><imaginaryi/></math>
+
+//==================== Logical operations ==============================
+
+2:=3
+<math><apply><equivalent/><cn>2</cn><cn>3</cn></apply></math>
+
+2=3
+<math><apply><eq/><cn>2</cn><cn>3</cn></apply></math>
+
+2!=3
+<math><apply><neq/><cn>2</cn><cn>3</cn></apply></math>
+
+2<3
+<math><apply><lt/><cn>2</cn><cn>3</cn></apply></math>
+
+2<=3
+<math><apply><leq/><cn>2</cn><cn>3</cn></apply></math>
+
+2>3
+<math><apply><gt/><cn>2</cn><cn>3</cn></apply></math>
+
+2>=3
+<math><apply><geq/><cn>2</cn><cn>3</cn></apply></math>
+
+2:-3
+<math><apply><implies/><cn>2</cn><cn>3</cn></apply></math>
+
+//==================== Multiple statements =============================
+
+x = 1, y = 2
+<math><vector><apply><eq/><ci>x</ci><cn>1</cn></apply><apply><eq/><ci>y</ci><cn>2</cn></apply></vector></math>
+
+x = 1, y = 2, z < 3
+<math><vector><apply><eq/><ci>x</ci><cn>1</cn></apply><apply><eq/><ci>y</ci><cn>2</cn></apply><apply><lt/><ci>z</ci><cn>3</cn></apply></vector></math>

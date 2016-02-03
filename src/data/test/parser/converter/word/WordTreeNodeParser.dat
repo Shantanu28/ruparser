@@ -1,0 +1,48 @@
+//======================================================================
+// Word Tree String -> Tree Converter Regression Tests - Data File
+//======================================================================
+// Trees may contain string nodes. This tests converting the string
+// to a tree using a parser, and then back to a string using a printer.
+// The final string should be identical to the original string
+//
+// Each test is two-line group:
+// Line 1 format:
+//		Tree's string representation
+// Line 2:
+//		Is the tree string legal
+//======================================================================
+
+//==================== Simple trees ====================================
+
+a$D { }
+true
+
+a$C { b$C { } c$D { } }
+true
+
+a$C { b$C { c$D { } } }
+true
+
+//==================== Multiple-character words ========================
+
+abc$D { }
+true
+
+abc$C { bddd$C { } caa$D { } }
+true
+
+abcbcbcbc$C { baaaaa$C { csa$D { } } }
+true
+
+//==================== Complex expressions =============================
+
+// testing if the word tree parse can parse complex expressions
+a$C { b$C { c$D { } d$D { e$D { f$D { } g$D { } } } } z$D { } }
+true
+
+// The equivalent of these hang for the syntax tree node parser so we test them here too
+mop$D { mop$D { uop$D { n$D { } } uop$D { n$D { } } } mop$D { uop$D { n$D { } } uop$D { n$D { } } } }
+true
+
+mop$D { uop$D { n$D { } } mop$D { uop$D { n$D { } } uop$D { n$D { } } mop$D { uop$D { n$D { } } uop$D { n$D { } } } } uop$D { n$D { } } }
+true

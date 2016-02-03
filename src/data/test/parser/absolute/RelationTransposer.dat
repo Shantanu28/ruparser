@@ -1,0 +1,83 @@
+//======================================================================
+// Absolute Canonicalization / Relation Transposition Regression Tests
+// - Data File
+//======================================================================
+// The allowed variables in all expressions are
+// "x", "y", "z".
+// Each test is two-line group:
+// Line 1: input expression
+// Line 2: convertedSyntaxTree
+//======================================================================
+
+//==================== Testing options =================================
+// Format: $ parameterName = parameterValue
+// Note: names and values are case-sensitive!
+
+// $ stopOnFirstError = true
+
+//==================== Tests that fail =================================
+
+//==================== Arithmetic expressions ==========================
+
+// Should not be changed
+x
+RES$response$F { R$:=$F { V$x$D { } E$empty$F { } } }
+
+//==================== Single commutative relation =====================
+
+// Should not be changed
+x := y
+RES$response$F { R$:=$D { V$x$D { } V$y$D { } } }
+
+// Should not be changed
+x = y
+RES$response$F { R$=$D { V$x$D { } V$y$D { } } }
+
+// Should not be changed
+x != y
+RES$response$F { R$!=$D { V$x$D { } V$y$D { } } }
+
+// Should not be changed
+x :- y
+RES$response$F { R$:-$D { V$x$D { } V$y$D { } } }
+
+
+// Should NOT be transposed
+y := x
+RES$response$F { R$:=$D { V$y$D { } V$x$D { } } }
+
+// Should be transposed
+y = x
+RES$response$F { R$=$D { V$x$D { } V$y$D { } } }
+
+// Should be transposed
+y != x
+RES$response$F { R$!=$D { V$x$D { } V$y$D { } } }
+
+// Should NOT be transposed
+y :- x
+RES$response$F { R$:-$D { V$y$D { } V$x$D { } } }
+
+//==================== Single non-commutative relation =================
+
+// Should not be changed
+x < y
+RES$response$F { R$<$D { V$x$D { } V$y$D { } } }
+
+// Should be transformed to y < x
+x > y
+RES$response$F { R$<$D { V$y$D { } V$x$D { } } }
+
+// Should not be changed
+x <= y
+RES$response$F { R$<=$D { V$x$D { } V$y$D { } } }
+
+// Should be transformed to y < x
+x >= y
+RES$response$F { R$<=$D { V$y$D { } V$x$D { } } }
+
+//==================== Multiple relations / statements =================
+
+x = y, x < 1, 2 >= y
+RES$response$F { R$=$D { V$x$D { } V$y$D { } } R$<$D { V$x$D { } N$1$D { } } R$<=$D { V$y$D { } N$2$D { } } }
+

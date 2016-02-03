@@ -1,0 +1,63 @@
+//======================================================================
+// Relative Canonicalization / Tree Commutative Depth Computation
+// Regression Tests - Data File
+//======================================================================
+// The allowed variables in all expressions are
+// "x", "y", "z".
+// Each test is two-line group:
+// Line 1: Expression syntax tree
+// Line 2: Commutative depth of the tree
+//======================================================================
+
+//==================== Testing options =================================
+// Format: $ parameterName = parameterValue
+// Note: names and values are case-sensitive!
+
+// $ stopOnFirstError = true
+
+//==================== Tests that fail =================================
+
+// Hangs on an infinite loop/recursion. Turned out to be a problem in the syntax tree string parser.
+// 2+3*4*[6+7]+5
+//MOP$+$D { UOP$+$D { N$2$D { } } MOP$*$D { UOP$*$D { N$3$D { } } UOP$*$D { N$4$D { } } MOP$+$D { UOP$+$D { N$6$D { } } UOP$+$D { N$7$D { } } } } UOP$+$D { N$5$D { } } }
+//3
+
+//==================== Depth-0 =========================================
+
+// +2
+UOP$+$D { N$2$D { } }
+0
+
+//==================== Depth-1 =========================================
+
+// 2+3
+MOP$+$D { UOP$+$D { N$2$D { } } UOP$+$D { N$3$D { } } }
+1
+
+// 2+3+4
+MOP$+$D { UOP$+$D { N$2$D { } } UOP$+$D { N$3$D { } } UOP$+$D { N$4$D { } } }
+1
+
+// 2*3
+MOP$*$D { UOP$*$D { N$2$D { } } UOP$*$D { N$3$D { } } }
+1
+
+// 2*3*4
+MOP$*$D { UOP$*$D { N$2$D { } } UOP$*$D { N$3$D { } } UOP$*$D { N$4$D { } } }
+1
+
+//==================== Depth-2 =========================================
+
+// 2+3*4
+MOP$+$D { UOP$+$D { N$2$D { } } MOP$*$D { UOP$*$D { N$3$D { } } UOP$*$D { N$4$D { } } } }
+2
+
+// 2+3*4+5
+MOP$+$D { UOP$+$D { N$2$D { } } MOP$*$D { UOP$*$D { N$3$D { } } UOP$*$D { N$4$D { } } } UOP$+$D { N$5$D { } } }
+2
+
+//==================== Depth-3 =========================================
+
+// 2+3*4*[6+7]+5
+MOP$+$D { UOP$+$D { N$2$D { } } MOP$*$D { UOP$*$D { N$3$D { } } UOP$*$D { N$4$D { } } MOP$+$D { UOP$+$D { N$6$D { } } UOP$+$D { N$7$D { } } } } UOP$+$D { N$5$D { } } }
+3

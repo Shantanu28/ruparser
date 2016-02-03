@@ -1,0 +1,71 @@
+//======================================================================
+// Syntax Tree String -> Tree Converter Regression Tests - Data File
+//======================================================================
+// Trees may contain string nodes. This tests converting the string
+// to a tree using a parser, and then back to a string using a printer.
+// The final string should be identical to the original string
+//
+// Each test is two-line group:
+// Line 1 format:
+//		Tree's string representation
+// Line 2:
+//		Is the tree string legal
+//======================================================================
+
+//==================== Simple expressions ==============================
+
+N$1$C { }
+true
+
+V$x$C { }
+true
+
+N$2$U { }
+true
+
+V$y$U { }
+true
+
+//==================== All elements are there but in a different structure
+
+BOP$+$C { BOP$*$C { N$4$C { } V$x$C { } } N$3$C { } }
+true
+
+//==================== Redundant elements ==============================
+
+// Could come from the expression (1)
+N$1$C { }
+true
+
+//==================== Discarded elements ==============================
+
+UOP$sin$C { V$x$C { } }
+true
+
+//==================== Composite expressions ===========================
+
+BOP$+$C { N$2$C { } N$3$C { } } 
+true
+
+BOP$+$C { N$2$U { } N$3$C { } }
+true
+  
+BOP$+$C { N$2$C { } N$5$U { } }
+ true
+  
+// Illustrates the shortcoming of element analysis$ "2" is marked in green.
+
+BOP$+$C { N$2$C { } N$3$U { } }
+true
+
+BOP$-$U { N$1$C { } N$2$C { } }
+true
+
+MOP$+$D { MOP$*$D { UOP$*$D { N$3$D { } } UOP$*$D { N$4$D { } } } MOP$*$D { UOP$*$D { N$3$D { } } UOP$*$D { N$4$D { } } } }
+true
+
+MOP$+$D { UOP$+$D { N$2$D { } } MOP$*$D { UOP$*$D { N$3$D { } } UOP$*$D { N$4$D { } } MOP$+$D { UOP$+$D { N$6$D { } } UOP$+$D { N$7$D { } } } } UOP$+$D { N$5$D { } } }
+true
+
+UOP$sin$D { MOP$+$D { UOP$+$D { N$2$D { } } MOP$*$D { UOP$*$D { N$3$D { } } UOP$*$D { N$4$D { } } MOP$+$D { UOP$+$D { N$6$D { } } UOP$+$D { N$7$D { } } } } UOP$+$D { N$5$D { } } } }
+true

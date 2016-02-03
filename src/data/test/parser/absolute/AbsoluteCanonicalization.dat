@@ -1,0 +1,26 @@
+//======================================================================
+// Absolute Canonicalization Regression Tests - Data File
+//======================================================================
+// The allowed variables in all expressions are
+// "x", "y", "z".
+// Each test is two-line group:
+// Line 1: input expression
+// Line 2: convertedSyntaxTree
+//======================================================================
+
+//==================== Testing options =================================
+// Format: $ parameterName = parameterValue
+// Note: names and values are case-sensitive!
+
+// $ stopOnFirstError = true
+
+//==================== Tests that fail =================================
+
+//==================== Expressions that caused problems in the past ====
+
+// Previous pittfall$ the x-branch disappeared
+x*(-y)
+UOP$-$D { MOP$*$F { UOP$*$F { V$x$D { } } UOP$*$D { V$y$D { } } } }
+
+(1)+2
+MOP$+$F { UOP$+$F { N$1$D { } } UOP$+$D { N$2$D { } } }

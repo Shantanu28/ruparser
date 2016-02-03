@@ -1,0 +1,179 @@
+//======================================================================
+// MathML Content Input Port Regression Tests - Data File
+//======================================================================
+// Allowed variables are "x", "y", "z", whose numerical values must be
+// declared according to the test case format below. Because compilation
+// is done prior to processing test cases, no other variables are allowed
+// although values may be different for different test cases.
+//
+// Each test is two-line group:
+// Line 1 format:
+//		MathML content string of an expression
+// Line 2 format:
+//		Corresponding string in the math parser's text syntax
+//======================================================================
+
+//==================== Tests that fail =================================
+
+//==================== Single elements =================================
+
+<math><cn>1</cn></math>
+1
+
+<math><ci>x</ci></math>
+x
+
+//==================== Unary operations ================================
+
+<math><apply><minus/><cn>1</cn></apply></math>
+-1
+
+<math><apply><minus/><ci>x</ci></apply></math>
+-x
+
+<math><apply><minus/><apply><minus/><cn>1</cn></apply></apply></math>
+--1
+
+<math><apply><minus/><apply><minus/><apply><minus/><cn>1</cn></apply></apply></apply></math>
+---1
+
+//==================== Binary operations ===============================
+
+<math><apply><plus/><cn>2</cn><cn>3</cn></apply></math>
+2+3
+
+<math><apply><minus/><cn>2</cn><cn>3</cn></apply></math>
+2-3
+
+<math><apply><times/><cn>2</cn><cn>3</cn></apply></math>
+2*3
+
+<math><apply><divide/><cn>2</cn><cn>3</cn></apply></math>
+2/3
+
+<math><apply><power/><cn>2</cn><cn>3</cn></apply></math>
+2^3
+
+//==================== Multinary operations ============================
+
+<math><apply><plus/><cn>2</cn><cn>3</cn><cn>4</cn></apply></math>
+2+3+4
+
+<math><apply><times/><cn>2</cn><cn>3</cn><cn>4</cn></apply></math>
+2*3*4
+
+<math><apply><divide/><apply><divide/><cn>2</cn><cn>3</cn></apply><cn>4</cn></apply></math>
+2/3/4
+
+<math><apply><minus/><apply><minus/><cn>2</cn><cn>3</cn></apply><cn>4</cn></apply></math>
+2-3-4
+
+//==================== Unary operations ================================
+
+<math><apply><sin/><ci>x</ci></apply></math>
+sin(x)
+
+<math><apply><log/><ci>x</ci></apply></math>
+log(x)
+
+<math><apply><ln/><ci>x</ci></apply></math>
+ln(x)
+
+<math><apply><root/><ci>x</ci></apply></math>
+root(x)
+
+//==================== Binary functions ================================
+
+<math><apply><log/><logbase><ci>x</ci></logbase><ci>y</ci></apply></math>
+log(x,y)
+
+// Non-standard ordering of arguments and qualifiers
+<math><apply><log/><ci>y</ci><logbase><ci>x</ci></logbase></apply></math>
+log(x,y)
+
+<math><apply><root/><degree><ci>x</ci></degree><ci>y</ci></apply></math>
+root(x,y)
+
+// Non-standard ordering of arguments and qualifiers
+<math><apply><root/><ci>y</ci><logbase><ci>x</ci></logbase></apply></math>
+root(x,y)
+
+// Should not be translated to "2 % 3" by convention
+<math><apply><rem/><cn>2</cn><cn>3</cn></apply></math>
+rem(2,3)
+
+//==================== Composite expressions ===========================
+
+<math><apply><plus/><apply><root/><ci>x</ci></apply><ci>y</ci></apply></math>
+root(x)+y
+
+<math><apply><root/><apply><plus/><ci>x</ci><ci>y</ci></apply></apply></math>
+root(x+y)
+
+<math><apply><minus/><ci>y</ci><apply><root/><degree><ci>x</ci></degree><ci>y</ci></apply></apply></math>
+y-root(x,y)
+
+//==================== Synthetic parentheses ===========================
+// Some parentheses must be added to the text format to indicate the correct
+// operation precedence, e.g. when converting the MathML content tree of 1/(2+3)
+// that doesn't have parentheses into "1/(2+3)", not "1/2+3".
+
+<math><apply><minus/><apply><plus/><cn>2</cn><cn>3</cn></apply></apply></math>
+-(2+3)
+
+<math><apply><divide/><cn>2</cn><apply><plus/><cn>3</cn><cn>4</cn></apply></apply></math>
+2/(3+4)
+
+<math><apply><minus/><apply><sin/><ci>x</ci></apply></apply></math>
+-sin(x)
+
+<math><apply><times/><cn>2</cn><apply><plus/><cn>3</cn><cn>4</cn></apply></apply></math>
+2*(3+4)
+
+//==================== Mathematical constants ==========================
+
+<math><pi/></math>
+pi
+
+<math><exponentiale/></math>
+e
+
+<math><eulergamma/></math>
+gamma
+
+<math><imaginaryi/></math>
+i
+
+//==================== Logical relations ===============================
+
+<math><apply><equivalent/><cn>2</cn><cn>3</cn></apply></math>
+2:=3
+
+<math><apply><eq/><cn>2</cn><cn>3</cn></apply></math>
+2=3
+
+<math><apply><neq/><cn>2</cn><cn>3</cn></apply></math>
+2!=3
+
+<math><apply><lt/><cn>2</cn><cn>3</cn></apply></math>
+2<3
+
+<math><apply><leq/><cn>2</cn><cn>3</cn></apply></math>
+2<=3
+
+<math><apply><gt/><cn>2</cn><cn>3</cn></apply></math>
+2>3
+
+<math><apply><geq/><cn>2</cn><cn>3</cn></apply></math>
+2>=3
+
+<math><apply><implies/><cn>2</cn><cn>3</cn></apply></math>
+2:-3
+
+//==================== Multiple statements =============================
+
+<math><vector><apply><times/><cn>2</cn><apply><plus/><cn>3</cn><cn>4</cn></apply></apply></vector></math>
+2*(3+4)
+
+<math><vector><apply><times/><cn>2</cn><apply><plus/><cn>3</cn><cn>4</cn></apply></apply><apply><minus/><apply><sin/><ci>x</ci></apply></apply></vector></math>
+2*(3+4),-sin(x)

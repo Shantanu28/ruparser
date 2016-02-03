@@ -1,0 +1,228 @@
+//======================================================================
+// Math Parser Demo Flow Regression Tests - Data File
+//======================================================================
+// Allowed variables are "x", "y", "z", whose numerical values must be
+// declared according to the test case format below. Because compilation
+// is done prior to processing test cases, no other variables are allowed
+// although values may be different for different test cases.
+//
+// Each test is two-line group:
+// Line 1 format:
+//		reference expression ~ response expression [ ~ precisionTol]
+//       reference = instructor-input reference expression
+//       response = student response expression
+// Line 2: //discarded //fictitiousCorrect //redundant //wrong //unrecognized //missing //correct ...
+//       editDistance correctElementFractionScore markerScore ...
+//       responseSyntaxTree ~ responseSyntaxTreeHTMLString
+//       - The tree should include status marking = "highlights")
+//       - correctElementFractionScore is the fraction of correct elements (c/(c+e)).
+//       - The line string is trimmed so trailing spaces are OK, but there must be
+//         exactly *one* space between each two data.
+//======================================================================
+
+//==================== Testing options =================================
+// Format: $ parameterName = parameterValue
+// Note: names and values are case-sensitive!
+
+$ stopOnFirstError = true
+
+//==================== Tests that fail =================================
+
+//==================== Simple expressions ==============================
+// Easy output line key for the lines below:
+// D F R W U M C equiv d f s t tree
+
+  1 ~ 1 ~ ARITHMETIC
+  0 0 0 0 0 0 1 true 0.0 1.0 100.0 100.0 N$1$C { } ~ <span class="mts_correct">1</span>
+
+  1 ~ +1 ~ ARITHMETIC
+  0 0 1 0 0 0 1 true 0.0 1.0 100.0 100.0 N$1$C { } ~ <span class="mts_redundant">+</span>&nbsp;<span class="mts_correct">1</span>
+
+  x ~ x ~ ARITHMETIC
+  0 0 0 0 0 0 1 true 0.0 1.0 100.0 100.0 V$x$C { } ~ <span class="mts_correct">x</span>
+
+  1 ~ 2 ~ ARITHMETIC
+  0 0 0 1 0 0 0 false 0.5 0.0 0.0 0.0 N$2$W { } ~ <span class="mts_wrong">2</span>
+  
+  x ~ y ~ ARITHMETIC
+  0 0 0 1 0 0 0 false 0.5 0.0 0.0 0.0 V$y$W { } ~ <span class="mts_wrong">y</span>
+
+//==================== All elements are there but in a different structure
+// Easy output line key for the lines below:
+// D F R W U M C equiv d f s tree
+
+// The 42 score and highlights are identical to R1.
+  3*x+4 ~ 4*x+3 ~ ARITHMETIC
+  0 0 0 2 0 0 3 false 1.0 0.6 60.0 42.0 MOP$+$F { UOP$+$F { MOP$*$F { UOP$*$F { N$4$W { } } UOP$*$C { V$x$C { } } } } UOP$+$C { N$3$W { } } } ~ <span class="mts_wrong">4</span>&nbsp;<span class="mts_correct">*</span>&nbsp;<span class="mts_correct">x</span>&nbsp;<span class="mts_correct">+</span>&nbsp;<span class="mts_wrong">3</span>
+
+//==================== Redundant elements ==============================
+// Easy output line key for the lines below:
+// D F R W U M C equiv d f s tree
+
+  1 ~ (1) ~ ARITHMETIC
+  0 0 1 0 0 0 1 true 0.0 1.0 100.0 100.0 N$1$C { } ~ <span class="mts_redundant">(</span>&nbsp;<span class="mts_correct">1</span>&nbsp;<span class="mts_redundant">)</span>
+
+  1+2 ~ 1++2 ~ ARITHMETIC
+  0 0 1 0 0 0 3 true 0.0 1.0 100.0 100.0 MOP$+$F { UOP$+$F { N$1$C { } } UOP$+$C { N$2$C { } } } ~ <span class="mts_correct">1</span>&nbsp;<span class="mts_correct">+</span>&nbsp;<span class="mts_redundant">+</span>&nbsp;<span class="mts_correct">2</span>
+
+  1-2 ~ 1+-2 ~ ARITHMETIC
+  0 0 1 0 0 0 3 true 0.0 1.0 100.0 100.0 MOP$+$F { UOP$+$F { N$1$C { } } UOP$-$C { N$2$C { } } } ~ <span class="mts_correct">1</span>&nbsp;<span class="mts_redundant">+</span>&nbsp;<span class="mts_correct">-</span>&nbsp;<span class="mts_correct">2</span>
+
+  1-2 ~ 1-+2 ~ ARITHMETIC
+  0 0 1 0 0 0 3 true 0.0 1.0 100.0 100.0 MOP$+$F { UOP$+$F { N$1$C { } } UOP$-$C { N$2$C { } } } ~ <span class="mts_correct">1</span>&nbsp;<span class="mts_correct">-</span>&nbsp;<span class="mts_redundant">+</span>&nbsp;<span class="mts_correct">2</span>
+
+  1-2 ~ 1-(2) ~ ARITHMETIC
+  0 0 1 0 0 0 3 true 0.0 1.0 100.0 100.0 MOP$+$F { UOP$+$F { N$1$C { } } UOP$-$C { N$2$C { } } } ~ <span class="mts_correct">1</span>&nbsp;<span class="mts_correct">-</span>&nbsp;<span class="mts_redundant">(</span>&nbsp;<span class="mts_correct">2</span>&nbsp;<span class="mts_redundant">)</span>
+
+  1-2 ~ 1-+(+2) ~ ARITHMETIC
+  0 0 3 0 0 0 3 true 0.0 1.0 100.0 100.0 MOP$+$F { UOP$+$F { N$1$C { } } UOP$-$C { N$2$C { } } } ~ <span class="mts_correct">1</span>&nbsp;<span class="mts_correct">-</span>&nbsp;<span class="mts_redundant">+</span>&nbsp;<span class="mts_redundant">(</span>&nbsp;<span class="mts_redundant">+</span>&nbsp;<span class="mts_correct">2</span>&nbsp;<span class="mts_redundant">)</span>
+
+  1-2 ~ 1+-+2 ~ ARITHMETIC
+  0 0 2 0 0 0 3 true 0.0 1.0 100.0 100.0 MOP$+$F { UOP$+$F { N$1$C { } } UOP$-$C { N$2$C { } } } ~ <span class="mts_correct">1</span>&nbsp;<span class="mts_redundant">+</span>&nbsp;<span class="mts_correct">-</span>&nbsp;<span class="mts_redundant">+</span>&nbsp;<span class="mts_correct">2</span>
+ 
+  1-2-3 ~ 1+-2+-3 ~ ARITHMETIC
+  0 0 2 0 0 0 5 true 0.0 1.0 100.0 100.0 MOP$+$F { UOP$+$F { N$1$C { } } UOP$-$C { N$2$C { } } UOP$-$C { N$3$C { } } } ~ <span class="mts_correct">1</span>&nbsp;<span class="mts_redundant">+</span>&nbsp;<span class="mts_correct">-</span>&nbsp;<span class="mts_correct">2</span>&nbsp;<span class="mts_redundant">+</span>&nbsp;<span class="mts_correct">-</span>&nbsp;<span class="mts_correct">3</span>
+
+  1+2+3 ~ 1+(2+3) ~ ARITHMETIC
+  0 0 1 0 0 0 5 true 0.0 1.0 100.0 100.0 MOP$+$F { UOP$+$F { N$1$C { } } UOP$+$C { N$2$C { } } UOP$+$C { N$3$C { } } } ~ <span class="mts_correct">1</span>&nbsp;<span class="mts_correct">+</span>&nbsp;<span class="mts_redundant">(</span>&nbsp;<span class="mts_correct">2</span>&nbsp;<span class="mts_correct">+</span>&nbsp;<span class="mts_correct">3</span>&nbsp;<span class="mts_redundant">)</span>
+  
+  1+2+3 ~ (1+2)+3 ~ ARITHMETIC
+  0 0 1 0 0 0 5 true 0.0 1.0 100.0 100.0 MOP$+$F { UOP$+$F { N$1$C { } } UOP$+$C { N$2$C { } } UOP$+$C { N$3$C { } } } ~ <span class="mts_redundant">(</span>&nbsp;<span class="mts_correct">1</span>&nbsp;<span class="mts_correct">+</span>&nbsp;<span class="mts_correct">2</span>&nbsp;<span class="mts_redundant">)</span>&nbsp;<span class="mts_correct">+</span>&nbsp;<span class="mts_correct">3</span>
+
+//==================== Discarded elements ==============================
+// Note$ the marker does not, cannot and should not identify discarded elements.
+// Discarded elements are associated with the matching phase and do not have a
+// MathToken, which is the unit data that the marker works with in syntax trees.
+// Easy output line key for the lines below:
+// D F R W U M C equiv d f s tree
+
+  sin(x) ~ sin(x) ~ ARITHMETIC
+  0 0 0 0 0 0 2 true 0.0 1.0 100.0 100.0 UOP$sin$C { V$x$C { } } ~ <span class="mts_correct">sin</span>&nbsp;<span class="mts_discarded">(</span>&nbsp;<span class="mts_correct">x</span>&nbsp;<span class="mts_discarded">)</span>
+
+//==================== Abs.Canonicalization-related examples ===========
+
+// Unary minus signs
+
+  x ~ -x ~ ARITHMETIC
+  //With the U->M AC step
+  0 0 0 0 1 0 1 false 1.0 0.5 50.0 35.0 UOP$-$U { V$x$C { } } ~ <span class="mts_unrecognized">-</span>&nbsp;<span class="mts_correct">x</span>  
+  
+  x ~ --x ~ ARITHMETIC
+  0 0 0 0 2 0 1 true 2.0 0.3333333333333333 33.33333333333333 53.333333333333336 UOP$-$U { UOP$-$U { V$x$C { } } } ~ <span class="mts_unrecognized">-</span>&nbsp;<span class="mts_unrecognized">-</span>&nbsp;<span class="mts_correct">x</span>
+  
+  -x ~ --x ~ ARITHMETIC
+  0 0 0 0 1 0 2 false 1.0 0.6666666666666666 66.66666666666666 46.666666666666664 UOP$-$U { UOP$-$C { V$x$C { } } } ~ <span class="mts_unrecognized">-</span>&nbsp;<span class="mts_correct">-</span>&nbsp;<span class="mts_correct">x</span>
+    
+  // Multinary-unary switch (a minus sign comes out, in front of a * or / op)
+  x*y ~ -x*-y ~ ARITHMETIC
+  0 0 0 0 2 0 3 true 2.0 0.6 60.0 72.0 UOP$-$U { MOP$*$F { UOP$*$F { V$x$C { } } UOP$*$C { UOP$-$U { V$y$C { } } } } } ~ <span class="mts_unrecognized">-</span>&nbsp;<span class="mts_correct">x</span>&nbsp;<span class="mts_correct">*</span>&nbsp;<span class="mts_unrecognized">-</span>&nbsp;<span class="mts_correct">y</span>
+  
+  -x*y ~ -x*-y ~ ARITHMETIC
+  0 0 0 0 1 0 4 false 1.0 0.8 80.0 56.0 UOP$-$C { MOP$*$F { UOP$*$F { V$x$C { } } UOP$*$C { UOP$-$U { V$y$C { } } } } } ~ <span class="mts_correct">-</span>&nbsp;<span class="mts_correct">x</span>&nbsp;<span class="mts_correct">*</span>&nbsp;<span class="mts_unrecognized">-</span>&nbsp;<span class="mts_correct">y</span>
+  
+  // Note$ correct expression is not in standard mathematical form. It really means "-x*y", thus
+  // the wrong minus sign in the response is in front of y, not x. The minus sign in front of x*y
+  // is -always- correct in such cases.
+  x*-y ~ -x*-y ~ ARITHMETIC
+  0 0 0 0 1 0 4 false 1.0 0.8 80.0 56.0 UOP$-$C { MOP$*$F { UOP$*$F { V$x$C { } } UOP$*$C { UOP$-$U { V$y$C { } } } } } ~ <span class="mts_correct">-</span>&nbsp;<span class="mts_correct">x</span>&nbsp;<span class="mts_correct">*</span>&nbsp;<span class="mts_unrecognized">-</span>&nbsp;<span class="mts_correct">y</span>
+
+  -x*y ~ x*-y ~ ARITHMETIC
+  0 0 0 0 0 0 4 true 0.0 1.0 100.0 100.0 UOP$-$C { MOP$*$F { UOP$*$F { V$x$C { } } UOP$*$C { V$y$C { } } } } ~ <span class="mts_correct">x</span>&nbsp;<span class="mts_correct">*</span>&nbsp;<span class="mts_correct">-</span>&nbsp;<span class="mts_correct">y</span>
+
+//==================== Rel.Canonicalization-related examples ===========
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Simple commutative operation operand switches
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  // Simple commutative operation operand switch
+  1+2 ~ 2+1 ~ ARITHMETIC
+  0 0 0 0 0 0 3 true 0.0 1.0 100.0 100.0 MOP$+$F { UOP$+$C { N$1$C { } } UOP$+$F { N$2$C { } } } ~ <span class="mts_correct">2</span>&nbsp;<span class="mts_correct">+</span>&nbsp;<span class="mts_correct">1</span>
+
+  // More complicated commutative operation operand switch
+  4+2*3 ~ 2*3+4 ~ ARITHMETIC
+  0 0 0 0 0 0 5 true 0.0 1.0 100.0 100.0 MOP$+$F { UOP$+$C { N$4$C { } } UOP$+$F { MOP$*$F { UOP$*$F { N$2$C { } } UOP$*$C { N$3$C { } } } } } ~ <span class="mts_correct">2</span>&nbsp;<span class="mts_correct">*</span>&nbsp;<span class="mts_correct">3</span>&nbsp;<span class="mts_correct">+</span>&nbsp;<span class="mts_correct">4</span>
+
+  // Two switches
+  4+2*3 ~ 3*2+4 ~ ARITHMETIC
+  0 0 0 0 0 0 5 true 0.0 1.0 100.0 100.0 MOP$+$F { UOP$+$C { N$4$C { } } UOP$+$F { MOP$*$F { UOP$*$C { N$2$C { } } UOP$*$F { N$3$C { } } } } } ~ <span class="mts_correct">3</span>&nbsp;<span class="mts_correct">*</span>&nbsp;<span class="mts_correct">2</span>&nbsp;<span class="mts_correct">+</span>&nbsp;<span class="mts_correct">4</span>
+  
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Munkres assignment / SortChildren cases
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  
+// Here the Munkres assignment transforms the response tree to the previous test case
+  2*3+4 ~ 2+3+4 ~ ARITHMETIC
+  0 0 0 1 0 0 4 false 2.2 0.8 80.0 56.0 MOP$+$F { UOP$+$W { N$3$C { } } UOP$+$C { N$4$C { } } UOP$+$F { N$2$C { } } } ~ <span class="mts_correct">2</span>&nbsp;<span class="mts_wrong">+</span>&nbsp;<span class="mts_correct">3</span>&nbsp;<span class="mts_correct">+</span>&nbsp;<span class="mts_correct">4</span>
+  
+// Manually sorted children in the response below as the Munkres assignment would do$
+// +2,+4,+3. Still, we want to examine the resulting highlights in this case.
+// Also, in this case, the Munkres total cost is strictly greater than the
+// actual edit distance of the super-trees (rooted at the corresponding multinary "+").
+//
+// Also$ because we changed the weights of relabeling operations, the score went up
+// a little bit from a previous version. Previous results were
+//   0 0 0 2 1 1 2 false 3.2 0.3333333333333333 33.33333333333333 23.333333333333332 MOP$+$F { UOP$+$F { N$2$C { } } UOP$+$U { N$4$W { } } UOP$+$C { N$3$W { } } } ~ <span class="mts_correct">2</span>&nbsp;<span class="mts_unrecognized">+</span>&nbsp;<span class="mts_wrong">4</span>&nbsp;<span class="mts_correct">+</span>&nbsp;<span class="mts_wrong">3</span>
+// The current version gives a higher score and better highlights.
+  2*3+4 ~ 2+4+3 ~ ARITHMETIC
+  0 0 0 3 0 0 2 false 3.2 0.4 40.0 28.0 MOP$+$F { UOP$+$C { N$3$W { } } UOP$+$W { N$4$W { } } UOP$+$F { N$2$C { } } } ~ <span class="mts_correct">2</span>&nbsp;<span class="mts_wrong">+</span>&nbsp;<span class="mts_wrong">4</span>&nbsp;<span class="mts_correct">+</span>&nbsp;<span class="mts_wrong">3</span>
+  
+// In this case BOTH pluses are highlighted as wrong in the student's response. This
+// is not completely the mirror-image case of 2*3+4 ~ 2+3+4 because of the location of
+// the plus in the reference (in front of the 4 or in front of a complex unit, 2*3).
+// At least when the student fixes the second plus, the first one becomes correct as well.
+  4+2*3 ~ 4+2+3 ~ ARITHMETIC
+  0 0 0 2 0 1 3 false 2.2 0.5 50.0 35.0 MOP$+$F { UOP$+$F { N$4$C { } } UOP$+$W { N$3$C { } } UOP$+$W { N$2$C { } } } ~ <span class="mts_correct">4</span>&nbsp;<span class="mts_wrong">+</span>&nbsp;<span class="mts_correct">2</span>&nbsp;<span class="mts_wrong">+</span>&nbsp;<span class="mts_correct">3</span>
+  
+  -1+2*3 ~ -1+-2*-3 ~ ARITHMETIC
+  0 0 0 0 2 0 6 true 2.0 0.75 75.0 82.5 MOP$+$F { UOP$+$F { UOP$-$C { N$1$C { } } } UOP$+$C { UOP$-$U { MOP$*$F { UOP$*$F { N$2$C { } } UOP$*$C { UOP$-$U { N$3$C { } } } } } } } ~ <span class="mts_correct">-</span>&nbsp;<span class="mts_correct">1</span>&nbsp;<span class="mts_correct">+</span>&nbsp;<span class="mts_unrecognized">-</span>&nbsp;<span class="mts_correct">2</span>&nbsp;<span class="mts_correct">*</span>&nbsp;<span class="mts_unrecognized">-</span>&nbsp;<span class="mts_correct">3</span>
+
+// The following two tests cause problems due to Java heap size - out of memory error.
+// I am suspecting that SyntaxTreeNodeDataCompiler is the problem -- defining
+// the data grammar rule as ('V' '$' Word) | ('V' '$' Num ) | ... might help
+// alleviate this difficulty. For now we just disable these test cases.
+
+  1*2+3*4 ~ -1*-2+-3*-4 ~ ARITHMETIC
+  0 0 0 0 4 0 7 true 4.0 0.6363636363636364 63.63636363636363 74.54545454545455 MOP$+$F { UOP$+$F { UOP$-$U { MOP$*$F { UOP$*$F { N$1$C { } } UOP$*$C { UOP$-$U { N$2$C { } } } } } } UOP$+$C { UOP$-$U { MOP$*$F { UOP$*$F { N$3$C { } } UOP$*$C { UOP$-$U { N$4$C { } } } } } } } ~ <span class="mts_unrecognized">-</span>&nbsp;<span class="mts_correct">1</span>&nbsp;<span class="mts_correct">*</span>&nbsp;<span class="mts_unrecognized">-</span>&nbsp;<span class="mts_correct">2</span>&nbsp;<span class="mts_correct">+</span>&nbsp;<span class="mts_unrecognized">-</span>&nbsp;<span class="mts_correct">3</span>&nbsp;<span class="mts_correct">*</span>&nbsp;<span class="mts_unrecognized">-</span>&nbsp;<span class="mts_correct">4</span>
+  
+  1*-2+3*4 ~ -1*2+-3*-4 ~ ARITHMETIC
+  0 0 0 0 2 0 8 true 2.0 0.8 80.0 86.0 MOP$+$F { UOP$+$F { UOP$-$C { MOP$*$F { UOP$*$F { N$1$C { } } UOP$*$C { N$2$C { } } } } } UOP$+$C { UOP$-$U { MOP$*$F { UOP$*$F { N$3$C { } } UOP$*$C { UOP$-$U { N$4$C { } } } } } } } ~ <span class="mts_correct">-</span>&nbsp;<span class="mts_correct">1</span>&nbsp;<span class="mts_correct">*</span>&nbsp;<span class="mts_correct">2</span>&nbsp;<span class="mts_correct">+</span>&nbsp;<span class="mts_unrecognized">-</span>&nbsp;<span class="mts_correct">3</span>&nbsp;<span class="mts_correct">*</span>&nbsp;<span class="mts_unrecognized">-</span>&nbsp;<span class="mts_correct">4</span>
+ 
+//==================== Numerical evaluation ============================
+
+// A pathological case where all elements are green but the overall result
+// is wrong because of error accumulation through the mathematical operations
+// performed.
+
+  10*10 ~ 10.000005*10.000005 ~ ARITHMETIC
+  0 0 0 2 0 0 1 false 1.0 0.3333333333333333 33.33333333333333 23.333333333333332 MOP$*$F { UOP$*$F { N$10.000005$W { } } UOP$*$C { N$10.000005$W { } } } ~ <span class="mts_wrong">10.000005</span>&nbsp;<span class="mts_correct">*</span>&nbsp;<span class="mts_wrong">10.000005</span>
+
+// Appeared in John Nordstrom's student in RUReady R1 Intermediate Algebra QID 736, {a=4,b=4}.
+// I couldn't get the reference string to look like 0 even with a @3d@ control, probably because
+// the answer is near 0 and is not rounded well. So R1 penalizes the student's answer "0" and
+// gives it only 65%. R2 gives 65% as well because of the minus sign in the reference.
+// We'll deal with the @3d@ to do away with this problem, but we keep it here for future
+// reference and guarding.
+  -0.00000000000000001776 ~ 0 ~ ARITHMETIC
+  0 0 0 0 0 1 1 true 1.0 0.5 50.0 65.0 N$0$C { } ~ <span class="mts_correct">0</span>
+  
+//==================== Miscellaneous ===================================
+  
+// - is wrong, + is redundant
+  1+2 ~ 1-+2  ~ ARITHMETIC
+  0 0 1 1 0 0 2 false 0.1 0.6666666666666666 66.66666666666666 46.666666666666664 MOP$+$F { UOP$+$F { N$1$C { } } UOP$-$W { N$2$C { } } } ~ <span class="mts_correct">1</span>&nbsp;<span class="mts_wrong">-</span>&nbsp;<span class="mts_redundant">+</span>&nbsp;<span class="mts_correct">2</span>
+
+//==================== Logical expressions =============================
+
+
+  x=1 ~ x=1 ~ LOGICAL
+  0 0 0 0 0 0 3 true 0.0 1.0 100.0 100.0 RES$response$F { R$=$C { N$1$C { } V$x$C { } } } ~ <span class="mts_correct">x</span>&nbsp;<span class="mts_correct">=</span>&nbsp;<span class="mts_correct">1</span>
+
+  x=1 ~ x=2 ~ LOGICAL
+  0 0 0 1 0 0 2 false 0.5 0.6666666666666666 66.66666666666666 46.666666666666664 RES$response$F { R$=$C { N$2$W { } V$x$C { } } } ~ <span class="mts_correct">x</span>&nbsp;<span class="mts_correct">=</span>&nbsp;<span class="mts_wrong">2</span>
+
+  x=1,y=2 ~ y=2,x=1 ~ LOGICAL
+  0 0 0 0 0 0 6 true 0.0 1.0 100.0 100.0 RES$response$F { R$=$C { N$1$C { } V$x$C { } } R$=$C { N$2$C { } V$y$C { } } } ~ <span class="mts_correct">y</span>&nbsp;<span class="mts_correct">=</span>&nbsp;<span class="mts_correct">2</span>&nbsp;<span class="mts_discarded">,</span>&nbsp;<span class="mts_correct">x</span>&nbsp;<span class="mts_correct">=</span>&nbsp;<span class="mts_correct">1</span>
+
+  1+2 ~ (1)+2 ~ LOGICAL
+  0 0 1 0 0 0 3 true 0.0 1.0 100.0 100.0 RES$response$F { R$:=$F { MOP$+$F { UOP$+$F { N$1$C { } } UOP$+$C { N$2$C { } } } E$empty$F { } } } ~ <span class="mts_redundant">(</span>&nbsp;<span class="mts_correct">1</span>&nbsp;<span class="mts_redundant">)</span>&nbsp;<span class="mts_correct">+</span>&nbsp;<span class="mts_correct">2</span>

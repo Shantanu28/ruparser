@@ -1,0 +1,167 @@
+//======================================================================
+// Arithmetic Numerical Comparison Tests - Data File
+//======================================================================
+// Allowed variables are "x", "y", "z", whose numerical values must be
+// declared according to the test case format below. Because compilation
+// is done prior to processing test cases, no other variables are allowed
+// although values may be different for different test cases.
+//
+// The relative tolerance of comparison is machine precision (~2.2e-16), unless
+// a different number is specified by precisionTol.
+//
+// Each test is two-line group:
+// Line 1 format:
+//		reference expression ~ response expression [ ~ precisionTol]
+//       reference = instructor-input reference expression
+//       response = student-typed response expression
+//       precisionTol = number of significant digits (provides a relative
+//       tolerance of 10^{-precisionTol} to compare the expressions)
+// Line 2: result of comparison (boolean)
+//
+// Note: the arithmetic setup is run only once (at the beginning of
+// the test data file). Hence, control sequences specified in an expression
+// are sticky for all subsequent expressions until further change to them.
+// 
+//======================================================================
+
+//==================== Testing options =================================
+// Format: $ parameterName = parameterValue
+// Note: names and values are case-sensitive!
+
+$ stopOnFirstError = true
+
+//==================== Tests that fail =================================
+
+i ~ sqrt(-1)
+true
+
+//@d@0 ~ @d@0.0000000000000001 ~ 2e-16
+//true
+
+//==================== Basic constants =================================
+
+1 ~ 1
+true
+
+1 ~ 2
+false
+
+1 ~ 0
+false
+
+0 ~ 0
+true
+
+0 ~ 0 ~ 1e-16
+true
+
+//==================== Comparison tolerance ============================
+
+@d@1 ~ @d@1.0000000000001 ~ 1e-14
+false
+
+// Note: complex values 
+@d@1 ~ @d@1.0000000000001 ~ 1e-13
+true
+
+1 ~ 1.0000000000001 ~ 1e-12
+true
+
+1 ~ 1.0000000000001 ~ 1e-11
+true
+
+1 ~ 1.0000000000001
+false
+
+// True because the second number is not representable by Java. It's simply 1.
+1 ~ 1.0000000000000001 ~ 1e-16
+true
+
+1 ~ 1.0000000000000001 ~ 1e-15
+true
+
+1 ~ 1.0000000000000001 ~ 1e-14
+true
+
+1 ~ 1.0000000000000001
+true
+
+// Equal because at least one of the number is less than 10*u where u=machine precision
+0 ~ 0.0000000000000001 ~ 2e-16
+true
+
+0 ~ 0.0000000000000001 ~ 1e-15
+true
+
+0 ~ 0.0000000000000001 ~ 1e-14
+true
+
+0 ~ 0.0000000000000001
+true
+
+//==================== Basic operations ================================
+
+2 ~ 1+1
+true
+
+//==================== Symbolic variables ==============================
+
+x ~ x
+true
+
+
+x ~ y
+false
+
+//==================== Integer arithmetic mode =========================
+
+// Will round to the nearest integer
+@i@3.5 ~ @i@4
+true
+
+@i@0 ~ @i@0
+true
+
+@i@0 ~ @i@1
+false
+
+@i@x^2 ~ @i@x^2
+true
+
+//==================== Rational arithmetic mode ========================
+
+@q@0 ~ @q@0
+true
+
+@q@0 ~ @q@1
+false
+
+@q@x^2 ~ @q@x^2
+true
+
+//==================== Real arithmetic mode ============================
+
+@d@0 ~ @d@0
+true
+
+@d@0 ~ @d@1
+false
+
+@d@x^2 ~ @d@x^2
+true
+
+//==================== Complex arithmetic mode =========================
+
+// Change back to complex mode
+
+@c@0 ~ @c@0
+true
+
+0 ~ 1
+false
+
+x^2 ~ x^2
+true
+
+i ~ sqrt(-1)
+true

@@ -1,0 +1,226 @@
+//======================================================================
+// Logical Matching Regression Tests - Data File
+//======================================================================
+// The allowed variables in all expressions are
+// "x", "y", "z".
+// Each test is two-line group:
+// Line 1: input expression
+// Line 2: boolean (true iff expression is fully matched)
+//======================================================================
+
+$ stopOnFirstError = true
+
+//==================== Tests that fail =================================
+
+1+2
+true
+
+3x^y
+true
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+// Arithmetic expressions
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+//==================== Basic operations ================================
+
+-3+5
+true
+
+3.5+3
+true
+
+3.5x
+true
+
+3.5x+3
+true
+
+3.5x^y+3
+true
+
+3.5x^(y+5*(3+6))+3-5
+true
+
+1+2-3*4/5^6
+true
+
+//==================== Variables =======================================
+
+// Case-insensitivity
+x
+true
+
+X
+true
+
+y
+true
+
+Y
+true
+
+//==================== Constants =======================================
+
+e
+true
+
+E
+true
+
+pi
+true
+
+Pi
+true
+
+PI
+true
+
+i
+true
+
+j
+true
+
+//==================== Modulus operation ================================
+
+5 % 3
+true
+
+3 % 5 % 3
+true
+
+3 + 5 % 3
+true
+
+3 * 5 % 3
+true
+
+//==================== Variables =======================================
+
+// Unrecognized variable
+3.5xx+3
+false
+
+//==================== Unary functions =================================
+sin(x)
+true
+
+sin(y)
+true
+
+log(x)
+true
+
+root(x)
+true
+
+log(x,y)
+true
+
+root(x,y)
+true
+
+sqrt(x)
+true
+
+// Nested functions
+3.5x + sin(cos(tan(y)))
+true
+
+//==================== Parentheses ======================================
+
+// Redundant parentheses
+3.5x + (sin(cos(tan(y))))
+true
+
+// Illegal parentheses
+3.5x^(y+5*(3+6)+3
+false
+
+//==================== Implicit Multiplication =========================
+@*@3.5x+3
+false
+
+@*@3.5*x+3
+true
+
+@!@3.5x+3
+true
+
+@!@3.5*x+3
+true
+
+@*@x
+true
+
+@!@x
+true
+
+//==================== Complex Arithmetic mode ==========================
+
+3.5x+i^i
+true
+
+//==================== Real Arithmetic mode =============================
+
+@d@3.5x+i^i
+false
+
+//==================== Rational Arithmetic mode =========================
+
+// Decimal points are allowed in rational mode, and
+// the number is converted into a rational.
+@q@3.5x+3
+true
+
+@q@3/5x+3
+true
+
+//==================== Integer Arithmetic mode ==========================
+
+// Will round to the nearest integer
+@i@3.5x+3
+true
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+// Logical expressions
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+//==================== Single statements and relations ==================
+
+x:=1
+true
+
+x=1
+true
+
+x!=1
+true
+
+x<1
+true
+
+x>1
+true
+
+x<=1
+true
+
+x>=1
+true
+
+//==================== Multiple statements ==============================
+
+x=1, y=2
+true
+
+x=1, y:-2, z:=3
+true
+
+x^2<x+3, y+x!=y-x, z-5>3
+true
+
+x^2>=x+3, y+x<=y-x, 3
+true

@@ -1,0 +1,40 @@
+//======================================================================
+// Logical Evaluation Regression Tests - Data File
+//======================================================================
+// Allowed variables are "x", "y", "z", whose numerical values must be
+// declared according to the test case format below. Because compilation
+// is done prior to processing test cases, no other variables are allowed
+// although values may be different for different test cases.
+//
+// Each test is two-line group:
+// Line 1 format:
+//		input expression
+// OR	input expression | [var1:value1 ... varn:valuen]
+//
+// Line 2: numerical value of the expression
+//======================================================================
+
+//==================== Testing options =================================
+// Format: $ parameterName = parameterValue
+// Note: names and values are case-sensitive!
+
+// $ stopOnFirstError = true
+
+//==================== Tests that fail =================================
+
+//==================== Single expressions ==============================
+
+1+1
+RES$response$F { R$:=$F { N$2$F { } E$empty$F { } } }
+
+1+1+1+1+1+1+1+1
+RES$response$F { R$:=$F { N$8$F { } E$empty$F { } } }
+
+1+(1+(1+(1)))
+RES$response$F { R$:=$F { N$4$F { } E$empty$F { } } }
+
+//==================== Multiple statements =============================
+
+// Note: statements and relations will be sorted by lexicographically-ascending order. 
+x=1+1, y<2, z:=3, x:=3 | x:1 y:3 z:5
+RES$response$F { R$:=$D { N$1$F { } N$3$F { } } R$:=$D { N$5$F { } N$3$F { } } R$<$D { N$3$F { } N$2$F { } } R$=$D { N$1$F { } N$2$F { } } }

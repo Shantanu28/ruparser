@@ -1,0 +1,61 @@
+//======================================================================
+// Absolute Canonicalization / Association switch
+// Regression Tests - Data File
+//======================================================================
+// The allowed variables in all expressions are
+// "x", "y", "z".
+// Each test is two-line group:
+// Line 1: originalTree
+// Line 2: transformedtree
+//
+// * In this test case math token stati are ignored.
+//======================================================================
+
+//==================== Testing options =================================
+// Format: $ parameterName = parameterValue
+// Note: names and values are case-sensitive!
+
+$ stopOnFirstError = true
+
+//==================== Tests that fail =================================
+
+//==================== Depth-2 trees ===================================
+
+// 2+[3+4] -> [2+3]+4
+BOP$+$D { N$2$D { } BOP$+$D { N$3$D { } N$4$D { } } }
+BOP$+$D { BOP$+$D { N$2$D { } N$3$D { } } N$4$D { } }
+
+// 2+[3-4] -> [2+3]-4
+BOP$+$D { N$2$D { } BOP$-$D { N$3$D { } N$4$D { } } }
+BOP$-$D { BOP$+$D { N$2$D { } N$3$D { } } N$4$D { } }
+
+// 2-[3+4] remains unchanged
+BOP$-$D { N$2$D { } BOP$+$D { N$3$D { } N$4$D { } } }
+BOP$-$D { N$2$D { } BOP$+$D { N$3$D { } N$4$D { } } }
+
+// 2-[3-4] remains unchanged
+BOP$-$D { N$2$D { } BOP$-$D { N$3$D { } N$4$D { } } }
+BOP$-$D { N$2$D { } BOP$-$D { N$3$D { } N$4$D { } } }
+
+
+// 2*[3*4] -> [2*3]*4
+BOP$*$D { N$2$D { } BOP$*$D { N$3$D { } N$4$D { } } }
+BOP$*$D { BOP$*$D { N$2$D { } N$3$D { } } N$4$D { } }
+
+// 2*[3-4] -> [2*3]-4
+BOP$*$D { N$2$D { } BOP$/$D { N$3$D { } N$4$D { } } }
+BOP$/$D { BOP$*$D { N$2$D { } N$3$D { } } N$4$D { } }
+
+// 2/[3*4] remains unchanged
+BOP$/$D { N$2$D { } BOP$*$D { N$3$D { } N$4$D { } } }
+BOP$/$D { N$2$D { } BOP$*$D { N$3$D { } N$4$D { } } }
+
+// 2[3/4] remains unchanged
+BOP$/$D { N$2$D { } BOP$/$D { N$3$D { } N$4$D { } } }
+BOP$/$D { N$2$D { } BOP$/$D { N$3$D { } N$4$D { } } }
+
+//==================== Depth-3 trees ===================================
+
+// 2+[[3-4]-5] -> [[2+3]-4]-5
+BOP$+$D { N$2$D { } BOP$-$D { BOP$-$D { N$3$D { } N$4$D { } } N$5$D { } } }
+BOP$-$D { BOP$-$D { BOP$+$D { N$2$D { } N$3$D { } } N$4$D { } } N$5$D { } }

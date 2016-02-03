@@ -1,0 +1,52 @@
+//======================================================================
+// Arithmetic Evaluation Regression Tests - Data File
+//======================================================================
+// Allowed variables are "x", "y", "z", whose numerical values must be
+// declared according to the test case format below. Because compilation
+// is done prior to processing test cases, no other variables are allowed
+// although values may be different for different test cases.
+//
+// Each test is two-line group:
+// Line 1 format:
+//		input expression
+// OR	input expression | [var1:value1 ... varn:valuen]
+//
+// Line 2: numerical value of the expression
+//======================================================================
+
+//==================== Testing options =================================
+// Format: $ parameterName = parameterValue
+// Note: names and values are case-sensitive!
+
+$ stopOnFirstError = true
+
+//==================== Tests that fail =================================
+
+//==================== No variables ====================================
+
+#1+2#
+3
+
+// From R1/Intermediate Algebra/QID 756. The evaluation result was
+// -0.000000000000001776 instead of 0.
+#@6d@4 - 4*5 + (-4)^2#
+0
+
+//==================== Symbolic substitution ===========================
+
+#x# | x:1
+1
+
+#x+y# | x:1 y:2
+3
+
+#x^z# | x:2 z:3
+8
+
+//==================== Interlaced text and formulae ====================
+
+Hi. The value of x is #x#. | x:1
+Hi. The value of x is 1.
+
+Hi. The value of x is #x#. Power is #z^x#. | x:1 y:2 z:3
+Hi. The value of x is 1. Power is 3.

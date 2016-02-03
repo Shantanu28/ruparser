@@ -1,0 +1,67 @@
+//======================================================================
+// Absolute Canonicalization / Binary-to-multinary operation conversion
+// Stage
+// Regression Tests - Data File
+//======================================================================
+// The allowed variables in all expressions are
+// "x", "y", "z".
+// Each test is two-line group:
+// Line 1: input expression
+// Line 2: convertedSyntaxTree
+//======================================================================
+
+//==================== Testing options =================================
+// Format: $ parameterName = parameterValue
+// Note: names and values are case-sensitive!
+
+// $ stopOnFirstError = true
+
+//==================== Tests that fail =================================
+
+//==================== Basic expressions ===============================
+
+2
+N$2$D { }
+
+//==================== + and * (binary ops that are also multinary) ====
+
+2+3
+MOP$+$F { UOP$+$F { N$2$D { } } UOP$+$D { N$3$D { } } }
+
+2*3
+MOP$*$F { UOP$*$F { N$2$D { } } UOP$*$D { N$3$D { } } }
+
+//==================== - and / (the inverses of a multinary op) ========
+
+2-3
+MOP$+$F { UOP$+$F { N$2$D { } } UOP$-$D { N$3$D { } } }
+
+2/3
+MOP$*$F { UOP$*$F { N$2$D { } } UOP$/$D { N$3$D { } } }
+
+//==================== Compound arguments ==============================
+
+sin(x)+cos(y)
+MOP$+$F { UOP$+$F { UOP$sin$D { V$x$D { } } } UOP$+$D { UOP$cos$D { V$y$D { } } } }
+
+//==================== More than two args ==============================
+
+2+3+4
+MOP$+$F { MOP$+$F { UOP$+$F { N$2$D { } } UOP$+$D { N$3$D { } } } UOP$+$D { N$4$D { } } }
+
+2*3*4
+MOP$*$F { MOP$*$F { UOP$*$F { N$2$D { } } UOP$*$D { N$3$D { } } } UOP$*$D { N$4$D { } } }
+
+//==================== Mixed multinary operations ======================
+
+// A unary operation should be added in front of the "*" child because it
+// is multinary but different from the parent operation (+)
+2*3+4
+MOP$+$F { UOP$+$F { MOP$*$F { UOP$*$F { N$2$D { } } UOP$*$D { N$3$D { } } } } UOP$+$D { N$4$D { } } }
+
+//==================== Copying parent -> first granchild of multinary child =======
+2+3+-4
+MOP$+$F { MOP$+$F { UOP$+$F { N$2$D { } } UOP$+$D { N$3$D { } } } MOP$+$F { UOP$-$D { N$4$D { } } } }
+
+2+3-4
+MOP$+$F { MOP$+$F { UOP$+$F { N$2$D { } } UOP$+$D { N$3$D { } } } UOP$-$D { N$4$D { } } }

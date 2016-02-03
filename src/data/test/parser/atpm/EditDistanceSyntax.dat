@@ -1,0 +1,41 @@
+//======================================================================
+// Edit Distance Computational Algorithm Tests - Data File
+// Syntax trees
+//======================================================================
+// Each test is two-line group:
+// Line 1 format:
+//		reference expression ~ response expression
+//       Where:
+//       reference = reference tree's string representation
+//       response = response tree's string representation
+// Line 2:
+//       editDistance nodalMapping_string_representation
+//======================================================================
+
+//==================== Testing options =================================
+// Format: $ parameterName = parameterValue
+// Note: names and values are case-sensitive!
+
+$ stopOnFirstError = true
+
+//==================== Simple trees ====================================
+
+N$1$D { }  ~ N$1$D { }
+0.0 (0$N$1$D;0$N$1$D)
+
+N$1$D { }  ~ N$2$D { }
+0.5 (0$N$1$D;0$N$2$D)
+
+N$2$D { }  ~ N$1$D { }
+0.5 (0$N$2$D;0$N$1$D)
+
+UOP$+$D { }  ~ UOP$-$D { }
+0.1 (0$UOP$+$D;0$UOP$-$D)
+
+//==================== Complex trees ===================================
+
+// Exactly matched nodes; fictitious vs. non-fictitious label comparison
+UOP$+$F { N$1$D { } } ~ UOP$+$C { N$1$W { } }
+0.0 (0$N$1$D;0$N$1$W)(1$UOP$+$F;1$UOP$+$C)
+
+

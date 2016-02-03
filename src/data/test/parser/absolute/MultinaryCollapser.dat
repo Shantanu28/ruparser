@@ -1,0 +1,43 @@
+//======================================================================
+// Absolute Canonicalization / multinary operation collapsing and
+// children sorting stage
+// Regression Tests - Data File
+//======================================================================
+// The allowed variables in all expressions are
+// "x", "y", "z".
+// Each test is two-line group:
+// Line 1: input expression
+// Line 2: convertedSyntaxTree
+//======================================================================
+
+//==================== Testing options =================================
+// Format: $ parameterName = parameterValue
+// Note: names and values are case-sensitive!
+
+// $ stopOnFirstError = true
+
+//==================== Tests that fail =================================
+
+//==================== More than two args for a multinary op ===========
+
+2+3+4
+MOP$+$F { UOP$+$F { N$2$D { } } UOP$+$D { N$3$D { } } UOP$+$D { N$4$D { } } }
+
+2*3*4
+MOP$*$F { UOP$*$F { N$2$D { } } UOP$*$D { N$3$D { } } UOP$*$D { N$4$D { } } }
+
+//==================== Inverse operations (-, / ) ======================
+
+2+3-4
+MOP$+$F { UOP$+$F { N$2$D { } } UOP$+$D { N$3$D { } } UOP$-$D { N$4$D { } } }
+
+-2+3
+MOP$+$F { UOP$-$D { N$2$D { } } UOP$+$D { N$3$D { } } }
+
+//==================== Children sorting ================================
+
+2+3-4-5
+MOP$+$F { UOP$+$F { N$2$D { } } UOP$+$D { N$3$D { } } UOP$-$D { N$4$D { } } UOP$-$D { N$5$D { } } }
+
+2+3-4+5
+MOP$+$F { UOP$+$F { N$2$D { } } UOP$+$D { N$3$D { } } UOP$-$D { N$4$D { } } UOP$+$D { N$5$D { } } }

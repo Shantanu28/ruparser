@@ -1,0 +1,45 @@
+//======================================================================
+// Absolute Canonicalization / Unary Switch Regression Tests - Data File
+//======================================================================
+// The allowed variables in all expressions are
+// "x", "y", "z".
+// Each test is two-line group:
+// Line 1: input expression
+// Line 2: convertedSyntaxTree
+//======================================================================
+
+//==================== Testing options =================================
+// Format: $ parameterName = parameterValue
+// Note: names and values are case-sensitive!
+
+// $ stopOnFirstError = true
+
+//==================== Tests that fail =================================
+
+//==================== Switching -, * ==================================
+
+// Should be transformed to -[x*y]
+-x*y
+UOP$-$D { BOP$*$D { V$x$D { } V$y$D { } } }
+
+// Should be transformed to -[x*y]
+x*-y
+UOP$-$D { BOP$*$D { V$x$D { } V$y$D { } } }
+
+// Should be transformed to -[x*-y]
+-x*-y
+UOP$-$D { BOP$*$D { V$x$D { } UOP$-$D { V$y$D { } } } }
+
+//==================== Switching -, / ==================================
+
+// Should be transformed to -[x/y]
+-x/y
+UOP$-$D { BOP$/$D { V$x$D { } V$y$D { } } }
+
+// Should be transformed to -[x/y]
+x/-y
+UOP$-$D { BOP$/$D { V$x$D { } V$y$D { } } }
+
+// Should be transformed to -[x/-y]
+-x/-y
+UOP$-$D { BOP$/$D { V$x$D { } UOP$-$D { V$y$D { } } } }
